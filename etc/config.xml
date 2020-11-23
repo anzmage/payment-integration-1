@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+	<default>
+		<payment>
+			<ipay88>
+				<active>1</active>
+				<model>Anzmage\Ipay88\Model\Payment\Ipay88</model>
+				<order_status>pending</order_status>
+				<title>Ipay88 Credit Card</title>
+				<allowspecific>0</allowspecific>
+				<group>offline</group>
+				<gateway_url>https://sandbox.ipay88.co.id/</gateway_url>
+				<payids><![CDATA[Credit Card|1|cc-123,Gcash|3|cgcash-123,Dragon Pay Online|18|dpay-online,Dragon Pay OTC Non-Bank|19|dpay-nonbank,Dragon Pay OTC Bank|20|dpay-bank]]></payids>
+			</ipay88>
+		</payment>
+	</default>
+</config>

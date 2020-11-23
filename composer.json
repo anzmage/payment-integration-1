@@ -1,0 +1,22 @@
+{
+    "name": "anzmage/module-ipay88",
+    "description": "",
+    "type": "magento2-module",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "anzmage",
+            "email": "anzmage@anzmage.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Anzmage\\Ipay88\\": ""
+        },
+        "files": [
+            "registration.php"
+        ]
+    }
+}

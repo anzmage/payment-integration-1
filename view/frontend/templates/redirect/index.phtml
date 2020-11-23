@@ -1,0 +1,64 @@
+<?php 
+
+$paymentConfig = $block->getIpayConfig();
+$lastOrderId = $block->getLastOrder()->getIncrementId();
+$lastOrderId = $lastOrderId;
+$GtAmount = (round($block->getLastOrder()->getGrandTotal(), 0));
+
+if (strpos($paymentConfig['gateway'], 'sandbox') !== false) {
+    //$GtAmount = 1;
+}
+
+$signStringArr = [
+    $paymentConfig['key'],
+    $paymentConfig['mid'],
+    $lastOrderId,
+    $GtAmount * 100,
+    (strtoupper($block->getLastOrder()->getOrderCurrencyCode()))
+    
+];
+
+$signature = $block->getSignature(implode("",$signStringArr));
+
+$requestRedirect = [];
+$requestRedirect["MerchantCode"] = $paymentConfig['mid'];
+$requestRedirect["PaymentId"] = $this->getRequest()->getParam('optionSelected');
+$requestRedirect["RefNo"] = $lastOrderId;
+$requestRedirect["Amount"] =  \number_format($GtAmount,2,'.','');
+$requestRedirect["Currency"] = strtoupper($block->getLastOrder()->getOrderCurrencyCode());
+$requestRedirect["ProdDesc"] = $this->getUrl() . ' // ' . $lastOrderId ;
+$requestRedirect["UserName"] = $block->getLastOrder()->getShippingAddress()->getFirstname();
+$requestRedirect["UserEmail"] = $block->getLastOrder()->getCustomerEmail();
+$requestRedirect["UserContact"] = $block->getLastOrder()->getShippingAddress()->getTelephone();
+$requestRedirect["Remark"] = $this->getUrl() . ' // ' . $lastOrderId ;
+$requestRedirect["Lang"] ="UTF-8" ;
+$requestRedirect["Signature"] = $signature;
+$requestRedirect["ResponseURL"] = $this->getUrl('ipay88/redirect/returnCustomer');
+$requestRedirect["BackendURL"] = $this->getUrl('ipay88/redirect/backend');
+
+$block->klog(['request_params' => $requestRedirect, 'url_request'=> $paymentConfig['gateway'] . 'epayment/entry.asp' ]);
+
+?>
+<br><br>
+<center>Please wait we will redirect to the payment gateway...</center>
+
+<FORM method="post" id="ePayment" name="ePayment"
+action="<?= $paymentConfig['gateway'] ?>epayment/entry.asp">
+
+<?php
+foreach($requestRedirect as $param => $paramVal)
+ {
+     ?>
+    <INPUT type="hidden" name="<?= $param ?>" value="<?= $paramVal ?>">
+     <?php
+ }
+?>
+</FORM>
+
+<script type="text/javascript">
+    require(["jquery"],function ($) {
+        $(document).ready(function(){
+            $('#ePayment').submit();
+        });
+    });
+</script>
